@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Email Handler — Free Demo</title>
+<style>
+  :root{--bg:#0b0d10;--panel:#12161c;--line:#1e2530;--ink:#e8edf4;--dim:#8b97a8;--accent:#4ade80;--radius:14px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Inter,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px}
+  header{padding:48px 0 32px;border-bottom:1px solid var(--line)}
+  h1{font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.1;margin:0 0 12px;letter-spacing:-.02em;font-weight:650}
+  h1 .dot{color:var(--accent)}
+  .tag{font-size:1rem;color:var(--dim);margin:0;max-width:56ch}
+  .badge{display:inline-flex;align-items:center;gap:8px;font-size:.82rem;border:1px solid var(--line);border-radius:999px;padding:4px 12px;color:var(--dim);margin:16px 0}
+  .badge .led{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+  .demo{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin:32px 0}
+  .demo h2{font-size:1.05rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin:0 0 16px;font-weight:600}
+  textarea{width:100%;background:#0f1319;border:1px solid var(--line);border-radius:8px;color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9rem;padding:12px;min-height:120px;resize:vertical}
+  button{background:var(--accent);color:#0b0d10;font-weight:600;padding:12px 24px;border-radius:999px;border:none;font-size:1rem;cursor:pointer;margin-top:12px}
+  button:hover{opacity:0.9}
+  .output{background:#0f1319;border:1px solid var(--line);border-radius:8px;padding:16px;margin-top:16px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86rem;line-height:1.7;color:#cbd5e1;white-space:pre-wrap;word-break:break-word}
+  .limit{color:var(--warn);font-size:.85rem;margin-top:12px}
+  .upgrade{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--radius);padding:20px 24px;margin:32px 0}
+  .upgrade h3{margin:0 0 8px;font-size:1.05rem;font-weight:600}
+  .upgrade p{margin:0 0 12px;color:var(--dim)}
+  .cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#0b0d10;font-weight:600;padding:14px 28px;border-radius:999px;text-decoration:none;font-size:1rem;margin:8px 0}
+  .cta-secondary{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--accent);border:1px solid var(--accent);font-weight:600;padding:14px 28px;border-radius:999px;text-decoration:none;font-size:1rem;margin:8px 0}
+  footer{padding:32px 0 48px;border-top:1px solid var(--line);color:var(--dim);font-size:.9rem}
+  a{color:var(--accent)}
+  @media (prefers-color-scheme: light){
+    :root{--bg:#fbfcfd;--panel:#fff;--line:#e3e8ef;--ink:#10151c;--dim:#5c6775}
+    textarea,.output{background:#f4f6f9;color:#2b3440}
+  }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Email Handler<span class="dot">.</span></h1>
+  <p class="tag">Classify email replies for workflow automation. Approval, rejection, question, escalation, noise.</p>
+  <div class="badge"><span class="led"></span>Free Demo — Limited</div>
+</div></header>
+
+<div class="wrap">
+  <div class="demo">
+    <h2>Try it (limited)</h2>
+    <textarea id="input" placeholder="Paste email reply text here..."></textarea>
+    <br><button onclick="runDemo()">Run</button>
+    <div class="output" id="output">Output will appear here...</div>
+    <p class="limit">Free demo: limited to 3 runs per session. <a href="index.html">Upgrade to full version</a> for unlimited use.</p>
+  </div>
+
+  <div class="upgrade">
+    <h3>Unlock the full version</h3>
+    <p>The free demo is limited. Get the full version with unlimited runs, all features, and no restrictions.</p>
+    <a class="cta" href="https://buy.stripe.com/14A7sO6LU7kc6qJdKg4ko0x">Buy full version — 29 EUR</a><br>
+    <a class="cta-secondary" href="https://buy.stripe.com/cNi7sO1rAbAs4iB9u04ko0H">Name your price — from €1</a>
+  </div>
+</div>
+
+<footer><div class="wrap">
+  <p>Email Handler — Free Demo</p>
+</div></footer>
+
+<script>
+let runCount = 0;
+const MAX_RUNS = 3;
+
+function runDemo() {
+  if (runCount >= MAX_RUNS) {
+    document.getElementById('output').textContent = 'Free demo limit reached (3 runs). Please upgrade for unlimited use.';
+    return;
+  }
+  runCount++;
+  const input = document.getElementById('input').value;
+  if (!input.trim()) {
+    document.getElementById('output').textContent = 'Please enter some input first.';
+    return;
+  }
+  const result = processInput(input);
+  document.getElementById('output').textContent = JSON.stringify(result, null, 2);
+}
+
+function processInput(input) {
+  
+  const text = input.toLowerCase();
+  let bucket = 'noise';
+  let confidence = 0.3;
+  let action = 'ignore';
+  if (text.includes('approve') || text.includes('approved') || text.includes('agree') || text.includes('proceed')) {
+    bucket = 'approval'; confidence = 0.9; action = 'proceed';
+  } else if (text.includes('reject') || text.includes('decline') || text.includes('no') || text.includes('stop')) {
+    bucket = 'rejection'; confidence = 0.9; action = 'stop';
+  } else if (text.includes('?') || text.includes('how') || text.includes('what') || text.includes('when')) {
+    bucket = 'question'; confidence = 0.7; action = 'respond';
+  } else if (text.includes('escalate') || text.includes('manager') || text.includes('supervisor')) {
+    bucket = 'escalation'; confidence = 0.9; action = 'escalate';
+  }
+  return { bucket, confidence, action };
+}
+</script>
+</body>
+</html>

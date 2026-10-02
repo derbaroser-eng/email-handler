@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>email-handler — Classify email replies for workflow automation</title>
+<meta name="description" content="Deterministic email reply classification. Approval, rejection, question, escalation, noise. No ML, no data leaves your machine.">
+<style>
+  :root{--bg:#0b0d10;--panel:#12161c;--line:#1e2530;--ink:#e8edf4;--dim:#8b97a8;--accent:#4ade80;--warn:#fbbf24;--radius:14px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Inter,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px}
+  header{padding:72px 0 40px;border-bottom:1px solid var(--line)}
+  h1{font-size:clamp(2.1rem,6vw,3.4rem);line-height:1.08;margin:0 0 14px;letter-spacing:-.02em;font-weight:650}
+  h1 .dot{color:var(--accent)}
+  .tag{font-size:clamp(1rem,2.4vw,1.25rem);color:var(--dim);margin:0;max-width:56ch}
+  h2{font-size:1.05rem;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin:56px 0 20px;font-weight:600}
+  p{margin:0 0 16px}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em;background:#1a212b;padding:2px 6px;border-radius:5px}
+  .principle{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--radius);padding:20px 24px;margin:0 0 16px}
+  .principle p:last-child{margin:0}
+  .principle strong{color:var(--accent);font-weight:600}
+  .grid{display:grid;gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px}
+  .card h3{margin:0 0 6px;font-size:1.05rem;font-weight:600}
+  .card p{margin:0;color:var(--dim);font-size:.95rem}
+  .status{display:inline-flex;align-items:center;gap:8px;font-size:.82rem;border:1px solid var(--line);border-radius:999px;padding:4px 12px;color:var(--dim);margin:0 0 26px}
+  .status .led{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+  pre{background:#0f1319;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;overflow-x:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86rem;line-height:1.7;margin:0 0 16px;color:#cbd5e1}
+  .cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#0b0d10;font-weight:600;padding:14px 28px;border-radius:999px;text-decoration:none;font-size:1rem;margin:24px 0}
+  footer{padding:44px 0 72px;border-top:1px solid var(--line);color:var(--dim);font-size:.9rem}
+  a{color:var(--accent)}
+  @media (prefers-color-scheme: light){
+    :root{--bg:#fbfcfd;--panel:#fff;--line:#e3e8ef;--ink:#10151c;--dim:#5c6775}
+    pre{background:#f4f6f9;color:#2b3440}
+    code{background:#eef1f5}
+  }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>email-handler<span class="dot">.</span></h1>
+  <p class="tag">Classify email replies for workflow automation. Approval, rejection, question, escalation, noise. Deterministic rules. No ML. No data leaves your machine.</p>
+  <div class="status"><span class="led"></span>Live - EUR29 one-time</div>
+  <a class="cta" href="https://buy.stripe.com/14A7sO6LU7kc6qJdKg4ko0x">Buy now - EUR29</a><br>
+  <a class="cta-secondary" href="https://buy.stripe.com/cNi7sO1rAbAs4iB9u04ko0H">Name your price — from €1</a><br>
+  <a class="cta-tertiary" href="demo.html">Free demo — limited</a>
+</div></header>
+
+<div class="wrap">
+
+  <h2>The problem</h2>
+  <div class="principle">
+    <p><strong>Email handling for automated workflows is broken.</strong></p>
+    <p>Following up with a vendor, getting approval from a client, handling support escalations. Most teams end up with one of three bad solutions: polling a shared Gmail inbox manually, using a transactional email API that is blind to replies, or building a custom email server and spending weeks on deliverability.</p>
+  </div>
+  <div class="principle">
+    <p><strong>Existing tools are expensive and complex.</strong></p>
+    <p>You need something that just classifies the reply and gets out of the way. No $50/month subscription, no complex setup.</p>
+  </div>
+
+  <h2>What it does</h2>
+  <p>Feed it a plain-text email reply. Get back structured classification:</p>
+  <div class="grid">
+    <div class="card"><h3>approval</h3><p>Sender approves or agrees. Action: proceed.</p></div>
+    <div class="card"><h3>rejection</h3><p>Sender rejects or declines. Action: stop.</p></div>
+    <div class="card"><h3>question</h3><p>Sender asks a question. Action: respond.</p></div>
+    <div class="card"><h3>escalation</h3><p>Sender escalates to higher authority. Action: escalate.</p></div>
+    <div class="card"><h3>noise</h3><p>Not actionable. Action: ignore.</p></div>
+  </div>
+
+  <h2>How it works</h2>
+  <pre>$ echo '{"text":"I approve this. Let'"'"'s proceed."}' | python handler.py
+{"bucket": "approval", "confidence": 0.9, "action": "proceed"}</pre>
+  <p>Deterministic keyword matching with priority ordering. No model, no API call, no data leaves your machine.</p>
+
+  <h2>Why deterministic</h2>
+  <div class="principle">
+    <p><strong>An LLM classifying email replies is a black box you cannot audit.</strong></p>
+    <p>When a tool says "this is an approval", you need to know why. A rule you can read is a rule you can trust, debug, and improve.</p>
+  </div>
+
+  <h2 id="buy">Buy</h2>
+  <p>EUR29 one-time. Runs locally. No subscription, no cloud, no data collection.</p>
+  <a class="cta" href="https://buy.stripe.com/14A7sO6LU7kc6qJdKg4ko0x">Buy now - EUR29</a><br>
+  <a class="cta-secondary" href="https://buy.stripe.com/cNi7sO1rAbAs4iB9u04ko0H">Name your price — from €1</a><br>
+  <a class="cta-tertiary" href="demo.html">Free demo — limited</a>
+
+</div>
+
+<footer><div class="wrap">
+  <p>email-handler</p>
+</div></footer>
+</body>
+</html>
